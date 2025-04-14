@@ -1,7 +1,11 @@
-ESX = exports['es_extended']:getSharedObject()
+if Config.Framework == 'esx' then
+    ESX = exports['es_extended']:getSharedObject()
+elseif Config.Framework == 'qbcore' then
+    QBCore = exports['qb-core']:GetCoreObject()
+end
 
-RegisterNetEvent('esx_pedmenu:setPed')
-AddEventHandler('esx_pedmenu:setPed', function(pedModel)
+RegisterNetEvent('pedmenu:setPed')
+AddEventHandler('pedmenu:setPed', function(pedModel)
     local modelHash = GetHashKey(pedModel)
     
     RequestModel(modelHash)
@@ -12,7 +16,12 @@ AddEventHandler('esx_pedmenu:setPed', function(pedModel)
     SetPlayerModel(PlayerId(), modelHash)
     SetModelAsNoLongerNeeded(modelHash)
     
-    -- Reset oblečenia aby ped vyzeral správne
+    -- Reset clothes to make ped look right
     SetPedDefaultComponentVariation(PlayerPedId())
-    ESX.ShowNotification('Tvoj ped bol zmenený!')
+    
+    if Config.Framework == 'esx' then
+        ESX.ShowNotification('Tvoj ped bol zmenený!')
+    elseif Config.Framework == 'qbcore' then
+        QBCore.Functions.Notify('Tvoj ped bol zmenený!', 'success')
+    end
 end)
